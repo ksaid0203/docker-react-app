@@ -1,0 +1,21 @@
+# docker-compose.yml
+version: "3"
+services:
+  react:
+    build: # 현 디렉토리에 있는 Dockerfile 사용
+      context: . # 도커 이미지를 구성하기 위한 파일과 폴더 디렉토리
+      dockerfile : Dockerfile.dev # 도커파일 이름 지정
+    ports: # 포트 매핑
+    - "3000:3000"
+    volumes: # 로컬 머신의 파일 매핑
+    - /usr/src/app/node_modules
+    - ./:/usr/src/app
+    stdin_open : true # 리액트 앱을 끌 때 필요(버그 수정)
+  tests: # 테스트를 위한 컨테이너
+    build:
+      context: .
+      dockerfile : Dockerfile.dev
+    volumes:
+    - /usr/src/app/node_modules
+    - ./:/usr/src/app
+    command: ["npm", "run", "test"]
